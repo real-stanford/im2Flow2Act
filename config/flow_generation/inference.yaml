@@ -1,0 +1,21 @@
+dev_dir: ${oc.env:DEV_PATH}
+hydra:
+  run:
+    dir: ${dev_dir}/im2flow2act/experiment/flow_generation/inference/${now:%Y-%m-%d_%H-%M-%S}
+
+model_path: ${dev_dir}/im2flow2act/checkpoints/flow_generation
+model_ckpt: 1800
+
+num_samples: 20
+num_inference_steps: 40
+guidance_scale: 8.0 #8.0
+draw_line: False
+viz_n_points: 1024
+frame_resize_shape: 224
+height: 32
+width: 32
+video_length: 32
+diff_flow: False
+
+dataset_path: ${dev_dir}/im2flow2act/data/simulation_evaluation/drawer_open
+evaluation_save_path: ${dataset_path}

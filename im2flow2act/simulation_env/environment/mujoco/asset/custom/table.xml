@@ -1,0 +1,26 @@
+<mujoco model="table">
+    <compiler angle="radian" autolimits="true" />
+    <option impratio="10" />
+    <default>
+        <default class="visual">
+            <geom type="mesh" contype="0" conaffinity="0" group="2" />
+        </default>
+        <default class="collision">
+            <geom type="mesh" group="3" />
+        </default>
+    </default>
+
+    <asset>
+        <texture name="wood" file="textures/wood4.png"/>
+        <material name="table" rgba="1 1 1 1" reflectance="0" specular="0.0" texture="wood"
+            shininess="0" />
+    </asset>
+    <worldbody>
+        <body name="table">
+            <geom size="0.38 0.61 0.005" class="visual" type="box"
+                material="table" />
+            <geom size="0.38 0.61 0.005" class="collision" friction= "1 1 1" type="box" />
+        </body>
+    </worldbody>
+</mujoco>
+    

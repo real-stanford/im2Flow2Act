@@ -1,0 +1,89 @@
+<mujoco model="drawer">
+  <compiler angle="radian" autolimits="true" />
+  <option impratio="10" />
+  <default>
+    <default class="visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2" />
+    </default>
+    <default class="collision">
+      <geom type="mesh" group="3" friction= "15 15 15"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="2d" name="drawer_wood" file="textures/wood3.png"/>
+    <material name="wood" texture="drawer_wood" />
+    <texture type="2d" name="metal" file="textures/metal4.png"/>
+    <material name="drawer_handle" texture="metal" />
+    <material name="bottom" rgba="1 0 0 1" reflectance="0" specular="0.0" shininess="0" />
+    <material name="mid" rgba="0 1 0 1" reflectance="0" specular="0.0" shininess="0" />
+    <material name="top" rgba="0 0 1 1" reflectance="0" specular="0.0" shininess="0" />
+
+  </asset>
+  <worldbody>
+    <body name="drawer" pos="0.0 0.0 0.0" euler="0 0 0">
+      <geom size="0.10 0.001 0.036" pos="0 -0.10 0.05" class="visual" type="box" material="wood" />
+      <geom size="0.10 0.001 0.036" pos="0 0.10 0.05" class="visual" type="box" material="wood" />
+      <!-- bot -->
+      <geom size="0.10 0.10 0.001" pos="0 0 0.01" class="visual" type="box" material="wood" />
+      <!-- top -->
+      <geom size="0.10 0.10 0.001" pos="0 0 0.085" class="visual" type="box" material="wood" />
+      <!-- back -->
+      <geom size="0.001 0.10 0.040" pos="-0.10 0 0.05" class="visual" type="box" material="wood" />
+
+
+      <geom size="0.10 0.001 0.036" pos="0 -0.11 0.05" class="collision" type="box" />
+      <geom size="0.10 0.001 0.036" pos="0 0.11 0.05" class="collision" type="box"  />
+      <!-- bot -->
+      <geom size="0.10 0.10 0.001" pos="0 0 0.00" class="collision" type="box"  />
+      <!-- top -->
+      <geom size="0.10 0.10 0.001" pos="0 0 0.09" class="collision" type="box"  />
+      <!-- back -->
+      <geom size="0.001 0.10 0.040" pos="-0.10 0 0.05" class="collision" type="box"  />
+
+
+      <body name="bottom_drawer" pos="0.03 0 0.05">
+        <joint name="bottom_drawer_slide" type="slide" axis="1 0 0" limited="true" range="0 0.3"
+          damping="50.0" frictionloss="1.0" />
+
+        <!-- bottom -->
+        <geom size="0.07 0.07 0.005" class="visual" type="box" pos="0 0 -0.02" material="wood" />
+        <!-- left and right -->
+        <geom size="0.07 0.005 0.03" class="visual" type="box" pos="0 0.07 0" material="wood" />
+        <geom size="0.07 0.005 0.03" class="visual" type="box" pos="0 -0.07 0" material="wood" />
+        <!-- front and back -->
+        <geom size="0.005 0.095 0.034" class="visual" type="box" pos="0.067 0 0" material="bottom" />
+        <geom size="0.005 0.095 0.034" class="visual" type="box" pos="-0.067 0 0" material="wood" />
+
+        <!-- bottom -->
+        <geom size="0.07 0.07 0.005" class="collision" type="box" pos="0 0 -0.02" />
+        <!-- left and right -->
+        <geom size="0.07 0.005 0.03" class="collision" type="box" pos="0 0.07 0"  />
+        <geom size="0.07 0.005 0.03" class="collision" type="box" pos="0 -0.07 0"  />
+        <!-- front and back -->
+        <geom size="0.005 0.095 0.034" class="collision" type="box" pos="0.067 0 0"  />
+        <geom size="0.005 0.095 0.034" class="collision" type="box" pos="-0.067 0 0" />
+
+        <body name="bottom_drawer_handle" pos="0.126 0 0" euler="1.57 0 0">
+          <geom size="0.01 0.01 0.05" class="visual" type="box" material="drawer_handle" />
+          <geom size="0.01 0.01 0.05" class="collision" type="box" />
+          <site name="pull_site_0" pos="0 0. 0.0" euler="0 0 0" group="4"/>
+          <site name="pull_site_1" pos="0 0. 0" euler="0 0 0" group="4"/>
+          <site name="pull_site_2" pos="0 0. 0.0" euler="0 0 0" group="4"/>
+        </body>
+        <body name="bottom_drawer_side_handle_right" pos="0.09 0.045 0" euler="1.57 0 0">
+          <geom size="0.033 0.01 0.005" class="visual" type="box" material="drawer_handle" />
+          <geom size="0.033 0.01 0.005" class="collision" type="box" />
+        </body>
+        <body name="bottom_drawer_side_handle_left" pos="0.09 -0.045 0" euler="1.57 0 0">
+          <geom size="0.033 0.01 0.005" class="visual" type="box" material="drawer_handle" />
+          <geom size="0.033 0.01 0.005" class="collision" type="box" />
+        </body>
+      </body>
+
+
+      
+    </body>
+
+  </worldbody>
+</mujoco>

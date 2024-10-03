@@ -1,0 +1,10 @@
+dev_dir: ${oc.env:DEV_PATH}
+hydra:
+  run:
+    dir: ${dev_dir}/im2flow2act/experiment/diffusion_policy/evaluation/${now:%Y-%m-%d_%H-%M-%S}
+
+seed: 42
+model_path: ${dev_dir}/im2flow2act/checkpoints/manipulation_policy
+ckpt: 300
+
+

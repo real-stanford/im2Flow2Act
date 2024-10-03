@@ -1,0 +1,72 @@
+dev_dir: ${oc.env:DEV_PATH}
+hydra:
+  run:
+    dir: ${dev_dir}/im2flow2act/experiment/flow_generation/finetune_decoder/${now:%Y-%m-%d_%H-%M-%S}
+
+project_name: SD_decoder_Fintune
+debug: False
+
+training:
+  num_train_epochs: 1000
+  max_train_steps: null
+  gradient_accumulation_steps: 1
+  gradient_checkpointing: False
+  lr_scheduler: "constant"
+  lr_warmup_steps: 0
+  # dataloader 
+  batch_size: 1800
+  num_workers: 16
+  shuffle: True
+  pin_memory: True
+  persistent_workers: True
+  drop_last: False
+  # ckpt
+  ckpt_frequency: 100
+
+
+
+
+pretrained_model_path: ${oc.env:DEV_PATH}/im2flow2act/pretrain_weights/StableDiffusion1.5
+max_grad_norm: 1.0
+
+
+optimizer:
+  learning_rate: 1e-4
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay: 1e-2
+  adam_epsilon: 1e-08
+
+dataset:
+  _target_: im2flow2act.flow_generation.dataloader.ae_finetune_dataset.AeFinetuneDataset
+  data_pathes: [
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/pickNplace",
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/pouring",
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/drawer_open",
+    ]
+  grid_size: 32
+  frame_resize_shape: [224,224]
+  point_tracking_img_size: [256,256]
+  diff_flow: False
+  max_episode: null
+
+
+evaluation:
+  eval_frequency: 200
+  num_samples: 3
+  evaluation_save_path: null
+  diff_flow: False
+  evalulation_dataset:
+    _target_: im2flow2act.flow_generation.dataloader.animateflow_dataset.AnimateFlowDataset
+    data_pathes: [
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/pickNplace",
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/pouring",
+    "${dev_dir}/im2flow2act/data/simulation_sphere_demonstration/drawer_open",
+    ]
+    n_sample_frames: 32
+    grid_size: 32
+    frame_sampling_method: "uniform"
+    frame_resize_shape: [224,224]
+    point_tracking_img_size: [256,256]
+    diff_flow: False
+    max_episode: ${evaluation.num_samples}

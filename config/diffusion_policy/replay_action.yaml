@@ -1,0 +1,24 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/replay/${now:%Y-%m-%d_%H-%M-%S}
+num_processes: 2
+data_buffer_path: /path/to/dataset
+replay_save_path: /path/to/save
+replay_offset: 0
+num_samples: null
+env_cfg:
+  env:
+    _target_: null
+    controll_frequency: 500
+    prefix: "ur5e"
+    delta_space: False
+    euler_gripper_rotation: True
+    visual_observation: True
+    random_init_robot: True
+    verbose: True
+    camera_ids: [0]
+    camera_res: [480, 640]
+  eval_render_res: [480, 640]
+  eval_render_fps: 2
+  eval_camera_ids: [0]
+  eval_store_path: null

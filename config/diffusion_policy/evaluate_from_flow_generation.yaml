@@ -1,0 +1,26 @@
+dev_dir: ${oc.env:DEV_PATH}
+
+hydra:
+  run:
+    dir: ${dev_dir}/im2flow2act/experiment/diffusion_policy/evaluation/${now:%Y-%m-%d_%H-%M-%S}
+seed: 42
+model_path: ${dev_dir}/im2flow2act/checkpoints/manipulation_policy
+ckpt: 300
+camera_intrinsic_path: ${dev_dir}/im2flow2act/data_local/simulation/instrinsic_5-1.pkl
+camera_pose_matrix_path: ${dev_dir}/im2flow2act/data_local/simulation/pose_matrix_5-1.pkl
+data_dirs: [
+    "${dev_dir}/im2flow2act/data/simulation_evaluation/drawer_open",
+    "${dev_dir}/im2flow2act/data/simulation_evaluation/pickNplace",
+    "${dev_dir}/im2flow2act/data/simulation_evaluation/pouring"
+]
+
+flow_generator_additional_args:
+  num_points: 128
+  num_frames: 32
+  # filters: ["mv","sam","db_scan"]
+  filters: ["mv"]
+  sam_closeness: 0.5
+  sam_area_thres: 3000
+  moving_threshold: 20 
+  workspace_depth: 1.2
+

@@ -1,0 +1,199 @@
+dev_dir: ${oc.env:DEV_PATH}
+hydra:
+  run:
+    dir: ${dev_dir}/im2flow2act/experiment/controll/train/${now:%Y-%m-%d_%H-%M-%S}
+
+
+project_name: flow_diffusion_policy
+
+
+debug: False
+action_dim: 7
+apply_alignment_loss: True
+alignment_loss_coef: 1
+proprioception_loss_coef: 0.0
+
+ema:
+  _target_: im2flow2act.common.ema_model.EMAModel
+  update_after_step: 0
+  inv_gamma: 1.0
+  power: 0.75
+  min_value: 0.0
+  max_value: 0.9999
+
+training:
+  epochs: 1001
+  gradient_accumulation_steps: 1
+  batch_size: 52
+  num_workers: 1
+  shuffle: True
+  pin_memory: True
+  persistent_workers: True
+  drop_last: False
+  ckpt_frequency: 50
+  resume: False
+  model_path: null
+  model_ckpt: null
+  use_ema: True
+evaluation:
+  eval_frequency: ${training.ckpt_frequency}
+  gt_eval_num: 10
+  out_of_sample_eval_num: null
+  gt_env_cfg:
+    env:
+      _target_: null
+      controll_frequency: 500
+      prefix: "ur5e"
+      delta_space: False
+      euler_gripper_rotation: True
+      visual_observation: True
+      random_init_robot: False
+      verbose: True
+      camera_ids: [0]
+      camera_res: [480,640]
+    eval_render_res: [480,640]
+    eval_render_fps: 10
+    eval_camera_ids: [0]
+    eval_store_path: null
+  gt_eval_dataset_args: 
+    data_dirs: [
+      "${dev_dir}/im2flow2act/data/simulation_evaluation/pickNplace",
+      "${dev_dir}/im2flow2act/data/simulation_evaluation/pouring",
+      "${dev_dir}/im2flow2act/data/simulation_evaluation/drawer_open",
+      "${dev_dir}/im2flow2act/data/simulation_evaluation/folding",
+    ]
+
+
+noise_scheduler:
+  _target_: diffusers.DDIMScheduler
+  num_train_timesteps: 50
+  beta_start: 0.0001
+  beta_end: 0.02
+  beta_schedule: squaredcos_cap_v2
+  clip_sample: True 
+  prediction_type: epsilon 
+num_inference_steps: 16
+
+optimizer: 
+  _target_: torch.optim.AdamW
+  lr: 1e-4
+  betas: [0.9, 0.999]
+  weight_decay: 1e-2
+  eps: 1e-08
+
+lr_scheduler: "cosine"
+num_warmup_steps: 500
+
+dataset:
+  _target_: im2flow2act.diffusion_policy.dataloader.diffusion_flow_bc_dataset.DiffusionFlowBCCloseLoopDataset
+  data_dirs: [
+  "${dev_dir}/im2flow2act/data/simulated_play/rigid",
+  "${dev_dir}/im2flow2act/data/simulated_play/articulated",
+  "${dev_dir}/im2flow2act/data/simulated_play/deformable",
+  ]
+  point_tracking_img_size: [256,256]
+  camera_resize_shape: [224,224]
+  load_camera_ids: [0]
+  unnormal_list: ["camera_0","camera_6","point_tracking_sequence","moving_mask","episode_idx","initial_frame","sample_indices","actual_sample_indices","robot_mask"]
+  num_points: 128
+  pred_horizon: 16
+  target_flow_horizon: 32
+  target_flow_offeset: 0
+  target_till_end: True
+  sample_frames: ${dataset.target_flow_horizon}
+  obs_horizon: 1
+  action_horizon: 8
+  shuffle_points: True 
+  downsample_rate: 2
+  optional_transforms: ["ColorJitter","RandomGrayscale"]
+  sampling_type: "stratified"
+  sampling_replace: null
+  is_plan_indices: null
+  equal_sampling: False
+  object_sampling: True
+  interval_target_flow: True
+  max_episode_len: 200
+  padding_size: 200
+  is_sam: True
+  herustic_filter: ["right"] 
+  load_pointcloud: True
+  normalize_pointcloud: True
+  camera_intrinsic_path: ${dev_dir}/im2flow2act/data_local/simulation/instrinsic_5-1.pkl
+  camera_pose_matrix_path: ${dev_dir}/im2flow2act/data_local/simulation/pose_matrix_5-1.pkl
+  ignore_robot_mask: False
+  depth_noisy_augmentation: False
+  gaussian_shifts: [0,0]
+  base_noise: [0,100]
+  std_noise: [0,50]
+  max_episode: null
+
+model:
+  _target_: im2flow2act.diffusion_policy.flow_diffusion_policy.FlowDiffusionPolicy
+  alignment_detach: True
+  freeze_vit: True
+  sampling_method: null
+  sampling_frame: null
+  plan_condition_type: "none"
+  target_condition_type: "none"
+  alignment_condition_on_prop: True
+  plan_encoder_condition_on_current_state: False
+  policy_condition_on_proprioception_proj: True
+  target_plan_drop_prob: 0.1
+
+  flow_encoder:
+    _target_:  im2flow2act.common.flow_network.FlowPos2dConcat
+    embed_dim: 192
+    post_zero_out: False
+    use_mix_in: False
+    img_size: ${dataset.camera_resize_shape}
+
+  discriptor_projection:
+    _target_: im2flow2act.common.projection.ProjectionHead
+    in_dim: 3
+    out_dim: 192
+    hidden_dim: null
+    nlayers: 1
+    apply_norm_layer: True
+
+  state_encoder:
+    _target_: im2flow2act.common.flow_network.FlowStateEncoder
+    global_pool: "token"
+    cross_attention: null
+    transformer_encoder:
+      _target_: im2flow2act.common.flow_network.FlowTransformerEncoder
+      embed_dim: 384
+      depth: 4
+      num_heads: 8
+      class_token: True
+
+  proprioception_predictor: null
+
+  plan_encoder:
+    _target_: im2flow2act.common.transformer.TransformerEncoder
+    embed_dim: 384
+    depth: 4
+    num_heads: 8
+
+  time_alignment_transformer:
+    _target_: im2flow2act.common.transformer.TransformerEncoder
+    embed_dim: 384
+    depth: 8
+    num_heads: 8
+
+  flow_proj_in:
+    _target_: im2flow2act.common.projection.Identity
+
+  
+  proprioception_proj_in: 
+    _target_: im2flow2act.common.projection.ProjectionHead
+    in_dim: 7
+    out_dim: 384
+    nlayers: 1
+    apply_norm_layer: True
+
+  
+  diffusion_policy:
+    _target_: im2flow2act.diffusion_policy.model.diffusion_model.ConditionalUnet1D
+    input_dim: ${action_dim}
+    global_cond_dim: 1152 #1152
+
