@@ -1,0 +1,29 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+avaliable_gpu: [0,1]
+data_buffer_path: null
+episode_start: null
+episode_end: null
+num_points: null
+sam_iterative: True
+sam_iterative_additional_kwargs:
+  from_grid: True
+  sam_area_thres: 5000
+  sam_new_point_num: 900
+  sam_closeness: 10  
+dbscan_bbox: False
+dbscan_additional_kwargs:
+  dbscan_epsilon: 30
+  dbscan_min_samples: 5
+  dbscan_use_sam: False
+  dbscan_sam_area_thres: 2000
+  dbscan_sam_closeness: 5
+  dbscan_sam_new_point_num: 1024
+  dbscan_bbox_padding: 0 
+
+from_bbox: False
+background_filter: False
+simulation_herustic_filter: null
+real_herustic_filter_type: null

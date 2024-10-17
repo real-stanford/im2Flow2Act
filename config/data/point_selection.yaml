@@ -1,0 +1,13 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+data_buffer_pathes: [
+  "path/to/dataset"
+]
+max_workers: 48
+criterior: "moving_threshold" 
+moving_threshold_args:
+  point_move_thresholds: [2.5] 
+  is_sam: True
+  simulation_herustic_filter: []

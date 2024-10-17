@@ -1,0 +1,22 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+data_buffer_path: null
+camera_id: 0
+
+store_path: null
+dataset: null
+resize_shape: 256 # must be 256 for tapnet to process
+downsample_ratio: 2
+n_sample_frame: 60
+drop_front_ratio: null  # must be null for controll data! 
+drop_tail_ratio: null
+max_episode: null
+discard_episode_length_upper_threshold: null
+discard_episode_length_lower_threshold: null
+use_mujoco_version_pt: False
+add_task_description: True
+max_processes: 30
+episode_start: null
+episode_end: null

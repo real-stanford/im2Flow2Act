@@ -1,0 +1,31 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+avaliable_gpu: [0,1,2,3]
+data_buffer_path: /path/to/dataset # complete path
+store_path:  /path/to/store # store path
+dataset:  dataset_name # dataset name at store path
+downsample_ratio: 2
+n_sample_frame: 80
+
+point_move_thresholds: 5 
+num_points: 32 ##### must be 32!
+
+from_bbox: True
+
+
+background_filter: True
+simulation_herustic_filter: [] 
+dbscan_use_sam: False
+dbscan_epsilon: 20    
+dbscan_sam_area_thres: 3000 
+dbscan_sam_closeness: 5
+dbscan_min_samples: 5
+dbscan_bbox_padding: 2
+
+# robot mask 
+real_herustic_filter_type: null
+zero_robot_mask: True
+simulation_herustic: False
+simulation_herustic_patial: False

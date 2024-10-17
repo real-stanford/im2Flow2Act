@@ -166,7 +166,6 @@ cython_debug/
 wandb/
 experiment/
 dataset/
-data/
 log/
 notebook/
 .hydra/

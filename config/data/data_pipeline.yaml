@@ -1,0 +1,19 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+avaliable_gpu: [0,1,2,3]
+data_buffer_path: /path/to/data_buffer
+store_path: /path/to/store
+dataset: dataset_name
+downsample_ratio: 2
+n_sample_frame: null # half of the max frames
+num_points: 20 
+from_bbox: False
+point_move_thresholds: 20  
+from_grid: False 
+simulation_herustic_filter: [] 
+
+zero_robot_mask: False  
+simulation_herustic: False 
+simulation_herustic_patial: True 

@@ -1,0 +1,37 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+data_buffer_pathes: [
+    "path/to/dataset",
+]
+max_workers: 48
+mask: "robot_mask"  
+
+
+robot_mask_args:
+  point_move_thresholds: [2.5]
+  t_thresholds: [5]
+  is_sam: True
+  simulation_herustic: True
+  simulation_herustic_patial: False
+  zero_robot_mask: False
+  real_herustic_filter_type: null
+
+cluster_refine_mask_args:
+  top_n: 50
+  apply_herustic_filter: True
+
+sam_args:
+  model_type: "vit_h"
+  sam_checkpoint: redundent/path/to/sam_checkpoint
+  resize_shape: [256,256]
+  points_per_side: 48
+  pred_iou_thresh: 0.9
+  stability_score_thresh: 0.9
+  crop_n_layers: 0
+  crop_n_points_downscale_factor: 2
+  min_mask_region_area: 100
+
+
+

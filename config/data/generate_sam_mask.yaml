@@ -1,0 +1,19 @@
+hydra:
+  run:
+    dir: ${oc.env:DEV_PATH}/im2flow2act/experiment/dataset_generation/${now:%Y-%m-%d_%H-%M-%S}
+
+
+avaliable_gpu: [0]
+data_buffer_path: null
+episode_start: 0
+episode_end: 20
+
+model_type: "vit_h"
+sam_checkpoint: path/to/sam_vit_h_4b8939.pth # need to fill in sam checkpoint path
+resize_shape: [256,256]
+points_per_side: 48
+pred_iou_thresh: 0.9
+stability_score_thresh: 0.9
+crop_n_layers: 0
+crop_n_points_downscale_factor: 2
+min_mask_region_area: 100
